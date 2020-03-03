@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:meds_aid/src/auth/signIn.dart';
+import 'package:meds_aid/src/auth/signup/finalization/success_page.dart';
 import 'package:meds_aid/src/providers/sign_up_model.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
@@ -23,6 +25,7 @@ class _DocFinalizationState extends State<DocFinalization> {
   var data;
   TextEditingController hName, sPin;
 
+  bool success = false;
   TextStyle defaultTextStyle;
   SnackBar snackBar = SnackBar(content: Text(''));
 
@@ -100,51 +103,54 @@ class _DocFinalizationState extends State<DocFinalization> {
   }
 
   Future signUp(BuildContext context) async {
-    try {
-      Dialogs.showLoadingIndicator(context);
-      final response = await post(
-        'http://medsaid.herokuapp.com/api/provider/signup/',
-        body: {
-          "email": provider.email,
-          "first_name": provider.firstName,
-          "last_name": provider.lastName,
-          "position": provider.rank,
-          "service": provider.service,
-          "speciality": provider.specialisation,
-          "phone_number": provider.phoneNumber,
-          "password": provider.password,
-          "confirm_password": provider.confirmPassword,
-          "service_pin": sPin.text,
-          "hospital": hName.text
-        },
-      );
-      Navigator.of(context).pop();
+    // try {
+    //   Dialogs.showLoadingIndicator(context);
+    //   final response = await post(
+    //     'http://medsaid.herokuapp.com/api/provider/signup/',
+    //     body: {
+    //       "email": provider.email,
+    //       "first_name": provider.firstName,
+    //       "last_name": provider.lastName,
+    //       "position": provider.rank,
+    //       "service": provider.service,
+    //       "speciality": provider.specialisation,
+    //       "phone_number": provider.phoneNumber,
+    //       "password": provider.password,
+    //       "confirm_password": provider.confirmPassword,
+    //       "service_pin": sPin.text,
+    //       "hospital": hName.text
+    //     },
+    //   );
+    //   Navigator.of(context).pop();
 
-      data = json.decode(response.body);
-      if (int.parse(data['response_code']) == 100) {
-        print(data['results']);
-        print("Success!! $data");
+    //   data = json.decode(response.body);
+    //   if (int.parse(data['response_code']) == 100) {
+    //     print(data['results']);
+    //     print("Success!! $data");
 
-        Future.delayed(Duration(milliseconds: 1500), () {
-          showSnackBar(snackbarContext, data['results'] ?? data['detail']);
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        });
-      } else {
-        data = json.decode(response.body);
-        showSnackBar(snackbarContext, data['results'] ?? data['detail']);
-        print(response.body);
-        print("Failed!! $data");
-      }
-    } on SocketException catch (e) {
-      apiFeedback("SocketException", e.message);
-    } on TimeoutException catch (e) {
-      apiFeedback("TimeoutException", e.message);
-    } on FormatException catch (e) {
-      if (e is FormatException) print(true);
-      apiFeedback("FormatException", e.message);
-    } catch (e) {
-      apiFeedback("Exception", "an unidentified error occured");
-    }
+    //     Future.delayed(Duration(milliseconds: 1500), () {
+    //       showSnackBar(snackbarContext, data['results'] ?? data['detail']);
+    //       Navigator.of(context).popUntil((route) => route.isFirst);
+    //     });
+    //   } else {
+    //     data = json.decode(response.body);
+    //     showSnackBar(snackbarContext, data['results'] ?? data['detail']);
+    //     print(response.body);
+    //     print("Failed!! $data");
+    //   }
+    // } on SocketException catch (e) {
+    //   apiFeedback("SocketException", e.message);
+    // } on TimeoutException catch (e) {
+    //   apiFeedback("TimeoutException", e.message);
+    // } on FormatException catch (e) {
+    //   if (e is FormatException) print(true);
+    //   apiFeedback("FormatException", e.message);
+    // } catch (e) {
+    //   apiFeedback("Exception", "an unidentified error occured");
+    // }
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SuccessPage()));
   }
 
   String specialisation, rank;

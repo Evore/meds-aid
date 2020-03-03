@@ -227,6 +227,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
               child: InputField(
                 _password,
                 'Password',
+                obscureText: true,
                 hasObscureToggle: true,
               ),
             ),
