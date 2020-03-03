@@ -124,7 +124,11 @@ class _DocFinalizationState extends State<DocFinalization> {
       if (int.parse(data['response_code']) == 100) {
         print(data['results']);
         print("Success!! $data");
-        Navigator.of(context).popUntil((route) => route.isFirst);
+
+        Future.delayed(Duration(milliseconds: 1500), () {
+          showSnackBar(snackbarContext, data['results'] ?? data['detail']);
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        });
       } else {
         data = json.decode(response.body);
         showSnackBar(snackbarContext, data['results'] ?? data['detail']);
