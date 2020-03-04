@@ -103,54 +103,50 @@ class _DocFinalizationState extends State<DocFinalization> {
   }
 
   Future signUp(BuildContext context) async {
-    // try {
-    //   Dialogs.showLoadingIndicator(context);
-    //   final response = await post(
-    //     'http://medsaid.herokuapp.com/api/provider/signup/',
-    //     body: {
-    //       "email": provider.email,
-    //       "first_name": provider.firstName,
-    //       "last_name": provider.lastName,
-    //       "position": provider.rank,
-    //       "service": provider.service,
-    //       "speciality": provider.specialisation,
-    //       "phone_number": provider.phoneNumber,
-    //       "password": provider.password,
-    //       "confirm_password": provider.confirmPassword,
-    //       "service_pin": sPin.text,
-    //       "hospital": hName.text
-    //     },
-    //   );
-    //   Navigator.of(context).pop();
+    try {
+      Dialogs.showLoadingIndicator(context);
+      final response = await post(
+        'http://medsaid.herokuapp.com/api/provider/signup/',
+        body: {
+          "email": provider.email,
+          "first_name": provider.firstName,
+          "last_name": provider.lastName,
+          "position": provider.rank,
+          "service": provider.service,
+          "speciality": provider.specialisation,
+          "phone_number": provider.phoneNumber,
+          "password": provider.password,
+          "confirm_password": provider.confirmPassword,
+          "service_pin": sPin.text,
+          "hospital": hName.text
+        },
+      );
+      Navigator.of(context).pop();
 
-    //   data = json.decode(response.body);
-    //   if (int.parse(data['response_code']) == 100) {
-    //     print(data['results']);
-    //     print("Success!! $data");
+      data = json.decode(response.body);
+      if (int.parse(data['response_code']) == 100) {
+        print(data['results']);
+        print("Success!! $data");
 
-    //     Future.delayed(Duration(milliseconds: 1500), () {
-    //       showSnackBar(snackbarContext, data['results'] ?? data['detail']);
-    //       Navigator.of(context).popUntil((route) => route.isFirst);
-    //     });
-    //   } else {
-    //     data = json.decode(response.body);
-    //     showSnackBar(snackbarContext, data['results'] ?? data['detail']);
-    //     print(response.body);
-    //     print("Failed!! $data");
-    //   }
-    // } on SocketException catch (e) {
-    //   apiFeedback("SocketException", e.message);
-    // } on TimeoutException catch (e) {
-    //   apiFeedback("TimeoutException", e.message);
-    // } on FormatException catch (e) {
-    //   if (e is FormatException) print(true);
-    //   apiFeedback("FormatException", e.message);
-    // } catch (e) {
-    //   apiFeedback("Exception", "an unidentified error occured");
-    // }
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SuccessPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SuccessPage()));
+            
+      } else {
+        data = json.decode(response.body);
+        showSnackBar(snackbarContext, data['results'] ?? data['detail']);
+        print(response.body);
+        print("Failed!! $data");
+      }
+    } on SocketException catch (e) {
+      apiFeedback("SocketException", e.message);
+    } on TimeoutException catch (e) {
+      apiFeedback("TimeoutException", e.message);
+    } on FormatException catch (e) {
+      if (e is FormatException) print(true);
+      apiFeedback("FormatException", e.message);
+    } catch (e) {
+      apiFeedback("Exception", "an unidentified error occured");
+    }
   }
 
   String specialisation, rank;
@@ -196,11 +192,9 @@ class _DocFinalizationState extends State<DocFinalization> {
         Text('M  e  d  s  A  i  d',
             style: defaultTextStyle.copyWith(
                 fontSize: 13, fontWeight: FontWeight.w500)),
-        Padding(
-          padding: const EdgeInsets.only(top: 40),
-        ),
+        SizedBox(height: 40),
         Text(
-          'Select Service',
+          'Just a few more steps',
           style: defaultTextStyle.copyWith(
             fontSize: 22,
           ),
@@ -212,9 +206,6 @@ class _DocFinalizationState extends State<DocFinalization> {
 
   Widget primaryDetails() {
     return Column(children: [
-      SizedBox(
-        height: 20,
-      ),
       DropDownField(
         hint: 'Field of specialisation',
         label: 'Specialisation',

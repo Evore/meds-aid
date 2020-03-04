@@ -21,66 +21,64 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   void initState() {
     super.initState();
-    toggleLoading(300);
+    toggleLoading(1000);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: successPage(context));
+    return GestureDetector(
+        onTap: () {
+          toggleLoading(0);
+          Future.delayed(Duration(milliseconds: 1000), () {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          });
+        },
+        child: Scaffold(body: successPage(context)));
   }
 
   Widget successPage(context) {
     return SizedBox.expand(
-      child: GestureDetector(
-        onTap: () {
-          toggleLoading(0);
-          // Future.delayed(Duration(milliseconds: 1000), () {
-            // Navigator.of(context).popUntil((route) => route.isFirst);
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SignIn()));
-            print('tapped');
-          // });
-        },
-        child: loading
-            ? CircularProgressIndicator()
-            : Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(38.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        'Account successfully created',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 30),
+      child: loading
+          ? Center(
+              child: SizedBox(
+                  height: 50, width: 50, child: CircularProgressIndicator()))
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(38.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Account successfully created',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'You will be routed back to the sign in page',
+                      style: TextStyle(
+                        fontSize: 15,
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'You will be routed back to the sign in page',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'You can access your account once your details have been approved.',
+                      style: TextStyle(
+                        fontSize: 15,
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        'You will gain access your account once your details have been approved.',
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      Text(
-                        'Tap anywhere to continue',
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Text(
+                      'Tap anywhere to continue',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
                 ),
               ),
-      ),
+            ),
     );
   }
 }
