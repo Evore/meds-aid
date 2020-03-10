@@ -101,6 +101,7 @@ class _DropDownFieldState extends State<DropDownField> {
       children: <Widget>[
         CustomLabel(widget.label),
         DropdownButtonFormField(
+          isExpanded: true,
             onSaved: (value) => value,
             validator: (input) {
               return (input == null)

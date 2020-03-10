@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meds_aid/src/auth/signup/finalization/doctor_finalization.dart';
 import 'package:meds_aid/src/auth/signup/sign_up.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
@@ -147,21 +148,25 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                     //   image: AssetImage('images/Welcome.png'),
                     //   fit: BoxFit.cover,
                     // ),
-                    ListView(padding: const EdgeInsets.all(0), children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            header(),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 50),
-                            ),
-                            form()
-                          ],
+                    Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              header(),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 50),
+                              ),
+                              form()
+                            ],
+                          ),
                         ),
                       ),
-                    ])
+                    )
                   ],
                 ),
               );

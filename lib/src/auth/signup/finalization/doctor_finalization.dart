@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:meds_aid/src/auth/signIn.dart';
 import 'package:meds_aid/src/auth/signup/finalization/success_page.dart';
+import 'package:meds_aid/src/models.dart/specialisations.dart';
 import 'package:meds_aid/src/providers/sign_up_model.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
@@ -10,7 +10,7 @@ import 'package:meds_aid/src/ui/widgets/inputs.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'dart:async';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class DocFinalization extends StatefulWidget {
   final bool isMedicalPractitioner;
@@ -26,6 +26,7 @@ class _DocFinalizationState extends State<DocFinalization> {
   TextEditingController hName, sPin;
 
   bool success = false;
+  bool isloading = true;
   TextStyle defaultTextStyle;
   SnackBar snackBar = SnackBar(content: Text(''));
 
@@ -35,35 +36,12 @@ class _DocFinalizationState extends State<DocFinalization> {
   double topInsets;
 
   List services = <String>["Doctor", "Nurse", "Pharmacy", "Ambulance Service"];
-  List specialisations = <String>[
-    "Immunology",
-    "Anesthesiology",
-    "Cardiology",
-    "Dermatology",
-    "Endocrinology",
-    "Gastroenterology",
-    "Geriatric Medicine Specialy",
-    "Hematology",
-    "Nephrology",
-    "Gynecology",
-    "Oncology",
-    "Osteopath",
-    "Otolaryngology",
-    "Pediatricians",
-    "Physiatry",
-    "Podiatry",
-    "Phsychiatry",
-    "Rheumatology",
-    "Sleep Medicine Specialy",
-    "Sports Medicine Specialy",
-    "Urology"
-  ];
+  List specialisations = <String>[];
   List ranks = <String>["Junior", "Senior"];
 
   @override
   void initState() {
     super.initState();
-
     hName = TextEditingController();
     sPin = TextEditingController();
   }
@@ -74,6 +52,7 @@ class _DocFinalizationState extends State<DocFinalization> {
     provider = Provider.of<SignUpModel>(context);
     defaultTextStyle = Theme.of(context).textTheme.body1;
     topInsets = MediaQuery.of(context).padding.top;
+    getSpecialties();
   }
 
   holdValues(String service) {
@@ -102,10 +81,33 @@ class _DocFinalizationState extends State<DocFinalization> {
     }
   }
 
+  Future getSpecialties() async {
+    try {
+      await fetchSpecialty().then((specialties) {
+        specialisations.clear();
+        specialties.forEach((specialty) {
+          specialisations.add(specialty.title);
+        });
+        setState(() {
+          isloading = false;
+        });
+      });
+    } on SocketException catch (e) {
+      apiFeedback("SocketException", e.message);
+    } on TimeoutException catch (e) {
+      apiFeedback("TimeoutException", e.message);
+    } on FormatException catch (e) {
+      if (e is FormatException) print(true);
+      apiFeedback("FormatException", e.message);
+    } catch (e) {
+      apiFeedback("Exception", "an unidentified error occured");
+    }
+  }
+
   Future signUp(BuildContext context) async {
     try {
       Dialogs.showLoadingIndicator(context);
-      final response = await post(
+      final response = await http.post(
         'http://medsaid.herokuapp.com/api/provider/signup/',
         body: {
           "email": provider.email,
@@ -130,7 +132,6 @@ class _DocFinalizationState extends State<DocFinalization> {
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SuccessPage()));
-            
       } else {
         data = json.decode(response.body);
         showSnackBar(snackbarContext, data['results'] ?? data['detail']);
@@ -207,24 +208,34 @@ class _DocFinalizationState extends State<DocFinalization> {
   Widget primaryDetails() {
     return Column(children: [
       DropDownField(
-        hint: 'Field of specialisation',
-        label: 'Specialisation',
-        items: specialisations,
-        value: specialisation,
-        onChanged: (input) {
-          specialisation = input;
-        },
-      ),
-      SizedBox(
-        height: 20,
-      ),
-      DropDownField(
         hint: 'Select rank',
         label: 'Rank',
         items: ranks,
         value: rank,
         onChanged: (input) {
           rank = input;
+        },
+      ),
+      SizedBox(
+        height: 20,
+      ),
+      if (isloading) SizedBox(
+        height: 20,
+        child: Row(
+          children: <Widget>[
+            Text('loading specialisations', style: TextStyle(fontSize: 12, color: Colors.grey),),
+            SizedBox(width: 5),
+            SizedBox( width: 10, height: 10, child: CircularProgressIndicator(strokeWidth: 1,))
+          ],
+        ),
+      ),
+      DropDownField(
+        hint: 'Field of specialisation',
+        label: 'Specialisation',
+        items: specialisations,
+        value: specialisation,
+        onChanged: (input) {
+          specialisation = input;
         },
       ),
       SizedBox(
