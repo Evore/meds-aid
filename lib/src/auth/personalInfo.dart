@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'package:meds_aid/src/ui/homepage.dart';
+import 'package:meds_aid/src/ui/pages/homepage.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/utils/size_config.dart';
 

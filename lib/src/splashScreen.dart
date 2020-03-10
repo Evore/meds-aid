@@ -9,7 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth/signIn.dart';
-import 'ui/homepage.dart';
+import 'ui/pages/homepage.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
