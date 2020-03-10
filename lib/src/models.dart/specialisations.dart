@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class Specialty {
-  // final int userId;
   final int id;
   final String title;
-  // final String body;
 
   Specialty({
     this.id,
@@ -15,10 +13,8 @@ class Specialty {
 
   factory Specialty.fromJson(Map<String, dynamic> json) {
     return Specialty(
-      // userId: json['userId'],
       id: json['id'],
       title: json['title'],
-      // body: json['body'],
     );
   }
 

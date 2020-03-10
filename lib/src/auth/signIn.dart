@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meds_aid/src/auth/signup/finalization/doctor_finalization.dart';
 import 'package:meds_aid/src/auth/signup/sign_up.dart';
+import 'package:meds_aid/src/ui/pages/homepage.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
 import 'package:meds_aid/src/ui/widgets/labels.dart';
@@ -93,7 +94,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
           "password": _password.text,
         });
         Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-            .pop(); //close the dialog
+            .pop();
 
         if (response.statusCode == 200) {
           data = json.decode(response.body);
@@ -325,8 +326,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   )),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ProviderSignUp()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
