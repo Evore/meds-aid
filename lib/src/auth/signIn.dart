@@ -5,16 +5,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meds_aid/src/auth/signup/finalization/doctor_finalization.dart';
 import 'package:meds_aid/src/auth/signup/sign_up.dart';
 import 'package:meds_aid/src/ui/pages/homepage.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
-import 'package:meds_aid/src/ui/widgets/labels.dart';
 import 'package:meds_aid/src/utils/size_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'signup/service_input.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -93,17 +89,20 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
           "email": _user.text,
           "password": _password.text,
         });
-        Navigator.of(_keyLoader.currentContext, rootNavigator: true)
-            .pop();
+        Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
 
         if (response.statusCode == 200) {
           data = json.decode(response.body);
           token = data["token"]["token"];
           user = data["user"]["user_full_name"];
-          userProfile = data["user"]["userProfile"];
+          userProfile = data["user"]["user_profile"];
 
-          // TODO add Home UI
-          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context)=> HomeUi(),));
+//TODO pushreplacement
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => HomePage(),
+              ));
 
           print(response.body);
           print(token);

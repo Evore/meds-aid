@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 final ThemeData primaryTheme = ThemeData(
-  textTheme: GoogleFonts.openSansTextTheme().copyWith(
+  textTheme: GoogleFonts.sourceSansProTextTheme().copyWith(
     display4: GoogleFonts.tangerine().copyWith(color: Colors.black87),
     button: TextStyle(color: Colors.white),
   ),
-  fontFamily: GoogleFonts.openSans().fontFamily,
+  fontFamily: GoogleFonts.sourceSansPro().fontFamily,
   primarySwatch: Colors.blue,
   accentTextTheme: TextTheme(button: TextStyle(color: Colors.white)),
   inputDecorationTheme: InputDecorationTheme(

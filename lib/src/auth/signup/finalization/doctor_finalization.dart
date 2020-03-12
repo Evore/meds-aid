@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:meds_aid/src/auth/signup/finalization/success_page.dart';
-import 'package:meds_aid/src/models.dart/specialisations.dart';
+import 'package:meds_aid/src/models.dart/specialisation.dart';
 import 'package:meds_aid/src/providers/sign_up_model.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
