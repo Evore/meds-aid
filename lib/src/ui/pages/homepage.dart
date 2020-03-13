@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:meds_aid/src/models.dart/request.dart';
 import 'package:meds_aid/src/ui/widgets/request_widget.dart';
@@ -11,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isLoading = true;
   List<PatientRequest> requests = <PatientRequest>[];
+  BuildContext snackbarContext;
   @override
   void initState() {
     super.initState();
@@ -31,21 +35,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.get('token');
     print(prefs.get('userProfile'));
-    fetchRequest(token).then((requests) {
-      this.requests = requests;
-      setState(() {
-        isLoading = false;
+
+    try {
+      fetchRequest(token).then((requests) {
+        this.requests = requests;
+        setState(() {
+          isLoading = false;
+        });
       });
-    });
+    } on SocketException catch (e) {
+      print(e.message);
+    } on TimeoutException catch (e) {
+      print(e.message);
+    } on FormatException catch (e) {
+      print(e.message);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-          decoration: verticalGradient(),
-          child: isLoading ? loading() : requestsListWidget()),
+      body: Builder(
+        builder: (snackbarContext) {
+          this.snackbarContext = snackbarContext;
+          return Container(
+              decoration: verticalGradient(),
+              child: isLoading ? loading() : requestsListWidget());
+        },
+      ),
     );
   }
 
@@ -81,7 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         itemCount: requests.length,
         itemBuilder: (BuildContext context, int index) {
           return RequestItem(
-            request: requests[index],
+            request: requests[index], sbContext: snackbarContext,
           );
         });
   }
