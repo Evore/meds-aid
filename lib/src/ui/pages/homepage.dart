@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:meds_aid/src/auth/signIn.dart';
 import 'package:meds_aid/src/models.dart/request.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/request_widget.dart';
@@ -33,20 +37,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // Returns a Future<List<PatientRequest>> object unless, an arror occurs, where it returns the error string
+  fetchRequest(String token, BuildContext context) async {
+    try {
+      final response = await get(
+        'http://medsaid.herokuapp.com/api/provider/requests/',
+        headers: {"Authorization": "JWT $token"},
+      );
+      final body = json.decode(response.body);
+
+      bool typeCheck = (body['detail'] == null);
+
+      final result =
+          typeCheck ? compute(parseContent, response.body) : body['detail'];
+
+      return result;
+    } on SocketException catch (e) {
+      print(e.message);
+      return 'Failed to reach our servers. Try reloading the page';
+    } on TimeoutException catch (e) {
+      print(e.message);
+      return 'Request timed out. Try reloading the page';
+    } on FormatException catch (e) {
+      print(e.message);
+      showSnackBar(context, e.message);
+    }
+  }
+
   Future fetch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.get('token');
     print(prefs.get('userProfile'));
 
-    fetchRequest(token, snackbarContext).then((requests) {
-      print(requests);
-
+    fetchRequest(token, snackbarContext).then((results) {
       //fetch request can return null values so check for those
-      if (requests != null) {
-        if (requests is String) {
-          errorMessage = requests;
-        } else {
-          this.requests = requests;
+      if (results != null) {
+        if (results is List<PatientRequest>) {
+          this.requests = results;
+          print(true);
+        } else if (results is String) {
+          errorMessage = results;
+          if (results.contains('expired')) {
+            showSnackBar(snackbarContext, 'Routing to login...');
+            Future.delayed(Duration(milliseconds: 400), () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => SignIn()));
+            });
+          }
+          print(results);
         }
       }
 
