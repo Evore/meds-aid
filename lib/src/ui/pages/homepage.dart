@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:meds_aid/src/models.dart/request.dart';
+import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/request_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +16,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isLoading = true;
   List<PatientRequest> requests = <PatientRequest>[];
   BuildContext snackbarContext;
+  String errorMessage;
   @override
   void initState() {
     super.initState();
@@ -36,20 +38,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     String token = prefs.get('token');
     print(prefs.get('userProfile'));
 
-    try {
-      fetchRequest(token).then((requests) {
-        this.requests = requests;
-        setState(() {
-          isLoading = false;
-        });
+    fetchRequest(token, snackbarContext).then((requests) {
+      print(requests);
+
+      //fetch request can return null values so check for those
+      if (requests != null) {
+        if (requests is String) {
+          errorMessage = requests;
+        } else {
+          this.requests = requests;
+        }
+      }
+
+      setState(() {
+        isLoading = false;
       });
-    } on SocketException catch (e) {
-      print(e.message);
-    } on TimeoutException catch (e) {
-      print(e.message);
-    } on FormatException catch (e) {
-      print(e.message);
-    }
+    });
   }
 
   @override
@@ -61,7 +65,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           this.snackbarContext = snackbarContext;
           return Container(
               decoration: verticalGradient(),
-              child: isLoading ? loading() : requestsListWidget());
+              child: isLoading
+                  ? loading()
+                  : requests == null ? emptyWidget() : requestsListWidget());
         },
       ),
     );
@@ -96,17 +102,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     //TODO: Change to futurebuilder
 
     return ListView.builder(
-        itemCount: requests.length,
-        itemBuilder: (BuildContext context, int index) {
-          return RequestItem(
-            request: requests[index], sbContext: snackbarContext,
-          );
-        });
+      itemCount: requests.length,
+      itemBuilder: (BuildContext context, int index) {
+        return RequestItem(
+          request: requests[index],
+          sbContext: snackbarContext,
+        );
+      },
+    );
   }
 
   Widget emptyWidget() {
     return Center(
-      child: Text('Nothing here at the moment'),
+      child: Text(errorMessage),
     );
   }
 }
