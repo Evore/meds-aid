@@ -98,7 +98,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
           userProfile = data["user"]["user_profile"];
 
 //TODO pushreplacement
-          Navigator.push(
+          Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (BuildContext context) => HomePage(),
@@ -325,8 +325,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   )),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => ProviderSignUp()));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),

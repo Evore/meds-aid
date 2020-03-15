@@ -60,7 +60,13 @@ class Dialogs {
   }
 }
 
-void showSnackBar(BuildContext context, String message) {
-  SnackBar snackBar = SnackBar(content: Text(message,), backgroundColor: Colors.grey[800],);
+void showSnackBar(BuildContext context, String message, {int duration}) {
+  SnackBar snackBar = SnackBar(
+    duration: Duration(milliseconds: duration ?? 3000),
+    content: Text(
+      message,
+    ),
+    backgroundColor: Colors.grey[800],
+  );
   Scaffold.of(context).showSnackBar(snackBar);
 }

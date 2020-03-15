@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../signIn.dart';
-
 class SuccessPage extends StatefulWidget {
   @override
   _SuccessPageState createState() => _SuccessPageState();

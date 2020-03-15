@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<PatientRequest> requests = <PatientRequest>[];
   BuildContext snackbarContext;
   String errorMessage;
+
+  final refreshKey = GlobalKey<RefreshIndicatorState>();
   @override
   void initState() {
     super.initState();
@@ -46,7 +48,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       );
       final body = json.decode(response.body);
 
-      bool typeCheck = (body['detail'] == null);
+      bool typeCheck;
+
+      try {
+        typeCheck = (body['detail'] == null);
+      } catch (e) {
+        print(e.toString());
+        typeCheck = true;
+      }
 
       final result =
           typeCheck ? compute(parseContent, response.body) : body['detail'];
@@ -54,10 +63,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return result;
     } on SocketException catch (e) {
       print(e.message);
+      showSnackBar(snackbarContext, 'Connection failed', duration: 1000);
       return 'Failed to reach our servers. Try reloading the page';
     } on TimeoutException catch (e) {
       print(e.message);
       return 'Request timed out. Try reloading the page';
+    } on ClientException catch (e) {
+      print(e.message);
+      return 'We encountered an unexpected error';
     } on FormatException catch (e) {
       print(e.message);
       showSnackBar(context, e.message);
@@ -139,20 +152,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget requestList() {
     //TODO: Change to futurebuilder
 
-    return ListView.builder(
-      itemCount: requests.length,
-      itemBuilder: (BuildContext context, int index) {
-        return RequestItem(
-          request: requests[index],
-          sbContext: snackbarContext,
-        );
-      },
+    return RefreshIndicator(
+      key: refreshKey,
+      onRefresh: fetch,
+      child: ListView.builder(
+        itemCount: requests.length,
+        itemBuilder: (BuildContext context, int index) {
+          return RequestItem(
+            request: requests[index],
+            sbContext: snackbarContext,
+          );
+        },
+      ),
     );
   }
 
   Widget emptyWidget() {
-    return Center(
-      child: Text(errorMessage),
+    return RefreshIndicator(
+      key: refreshKey,
+      onRefresh: fetch,
+      child: ListView(
+        children: [
+          ConstrainedBox(
+            constraints: (BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  MediaQuery.of(context).padding.bottom,
+              maxWidth: MediaQuery.of(context).size.width,
+            )),
+            child: Center(
+              child: Text(errorMessage),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
