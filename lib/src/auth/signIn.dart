@@ -325,7 +325,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   )),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => ProviderSignUp()));
                   },
                   child: Padding(

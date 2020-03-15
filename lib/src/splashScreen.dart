@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       if (token != null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignIn()));
+            context, MaterialPageRoute(builder: (context) => HomePage()));
       } else {
         final verify = await post('${baseURL}verify/', body: {
           'token': token.toString(),

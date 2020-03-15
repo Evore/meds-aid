@@ -50,9 +50,9 @@ class RequestItemState extends State<RequestItem> {
         borderRadius: BorderRadius.all(Radius.circular(12)),
         boxShadow: <BoxShadow>[
           BoxShadow(
-              color: Color(0x30002733),
+              color: Color(0x10002733),
               offset: Offset(0, 3.5),
-              blurRadius: 4.5,
+              blurRadius: 2.5,
               spreadRadius: 0),
         ],
       ),
@@ -187,8 +187,11 @@ class RequestItemState extends State<RequestItem> {
       Navigator.of(context).pop();
       var data = json.decode(response.body);
       print(data['results']['status']);
+      setState(() {
+        isPending = false;
+      });
     } on SocketException catch (e) {
-      apiFeedback("SocetException", e.message);
+      apiFeedback("SocketException", e.message);
       Navigator.pop(context);
     } on TimeoutException catch (e) {
       apiFeedback("TimeoutException", e.message);
