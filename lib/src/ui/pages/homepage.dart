@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // Returns a Future<List<PatientRequest>> object unless, an arror occurs, where it returns the error string
+  // Returns a Future<List<PatientRequest>> object unless an arror occurs, where it returns the error string
   fetchRequest(String token, BuildContext context) async {
     try {
       final response = await get(
