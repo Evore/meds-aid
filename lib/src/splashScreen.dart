@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:meds_aid/src/ui/pages/home.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen>
     try {
       if (token != null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => Home()));
       } else {
         final verify = await post('${baseURL}verify/', body: {
           'token': token.toString(),

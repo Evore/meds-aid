@@ -14,7 +14,8 @@ import 'package:http/http.dart' as http;
 
 class DocFinalization extends StatefulWidget {
   final bool isMedicalPractitioner;
-  DocFinalization({this.isMedicalPractitioner = true});
+  final String role;
+  DocFinalization({this.isMedicalPractitioner = true, this.role});
   @override
   _DocFinalizationState createState() => _DocFinalizationState();
 }
@@ -83,7 +84,7 @@ class _DocFinalizationState extends State<DocFinalization> {
 
   Future getSpecialties() async {
     try {
-      await fetchSpecialty().then((specialties) {
+      await fetchSpecialty(widget.role).then((specialties) {
         specialisations.clear();
         specialties.forEach((specialty) {
           specialisations.add(specialty.title);
@@ -219,16 +220,25 @@ class _DocFinalizationState extends State<DocFinalization> {
       SizedBox(
         height: 20,
       ),
-      if (isloading) SizedBox(
-        height: 20,
-        child: Row(
-          children: <Widget>[
-            Text('loading specialisations', style: TextStyle(fontSize: 12, color: Colors.grey),),
-            SizedBox(width: 5),
-            SizedBox( width: 10, height: 10, child: CircularProgressIndicator(strokeWidth: 1,))
-          ],
+      if (isloading)
+        SizedBox(
+          height: 20,
+          child: Row(
+            children: <Widget>[
+              Text(
+                'loading specialisations',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(width: 5),
+              SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 1,
+                  ))
+            ],
+          ),
         ),
-      ),
       DropDownField(
         hint: 'Field of specialisation',
         label: 'Specialisation',

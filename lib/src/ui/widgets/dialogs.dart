@@ -62,7 +62,7 @@ class Dialogs {
 
 void showSnackBar(BuildContext context, String message, {int duration}) {
   SnackBar snackBar = SnackBar(
-    duration: Duration(milliseconds: duration ?? 3000),
+    duration: Duration(milliseconds: duration ?? 2000),
     content: Text(
       message,
     ),

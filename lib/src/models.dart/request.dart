@@ -43,7 +43,6 @@ class PatientRequest {
   }
 }
 
-
 List<PatientRequest> parseContent(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
@@ -51,3 +50,8 @@ List<PatientRequest> parseContent(String responseBody) {
       .map<PatientRequest>((json) => PatientRequest.fromJson(json))
       .toList();
 }
+
+// class RequestResult {
+//   final List<PatientRequest> patientRequest;
+//   final String errorMessage;
+// }

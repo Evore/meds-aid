@@ -150,6 +150,7 @@ class _ServiceInputState extends State<ServiceInput> {
     if (formState.validate()) {
       formState.save();
       provider.service = service;
+      print(service);
 
       bool isPractitioner;
 
@@ -162,6 +163,7 @@ class _ServiceInputState extends State<ServiceInput> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => DocFinalization(
                   isMedicalPractitioner: isPractitioner,
+                  role: service,
                 )));
       } else {
         showSnackBar(snackbarContext, 'Selected feature currently unavailable');

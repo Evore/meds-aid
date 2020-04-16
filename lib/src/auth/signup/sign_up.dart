@@ -109,7 +109,7 @@ class _ProviderSignUpState extends State<ProviderSignUp>
             "password2": cPassword.text
           },
         );
-        Navigator.of(context).pop(); //close the dialoge
+        Navigator.of(context).pop(); //close the dialog
 
         data = json.decode(response.body);
         if (int.parse(data['response_code']) == 100) {
@@ -128,11 +128,16 @@ class _ProviderSignUpState extends State<ProviderSignUp>
         }
       } on SocketException catch (e) {
         apiFeedback("SocketException", e.message);
+        Navigator.pop(context);
       } on TimeoutException catch (e) {
         apiFeedback("TimeoutException", e.message);
+        Navigator.pop(context);
+
       } catch (e) {
         if (e is FormatException) print(true);
-        apiFeedback("FormatException", e.message);
+        apiFeedback("FormatException", e.toString());
+        Navigator.pop(context);
+
       }
     }
   }

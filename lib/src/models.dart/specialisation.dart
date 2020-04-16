@@ -26,9 +26,11 @@ class Specialty {
   }
 }
 
-Future<List<Specialty>> fetchSpecialty() async {
-  final response =
-      await get('http://medsaid.herokuapp.com/api/request/specialities/');
+Future<List<Specialty>> fetchSpecialty(String role) async {
+  String url = role == 'doctor'
+      ? 'http://medsaid.herokuapp.com/api/request/specialities/'
+      : 'http://medsaid.herokuapp.com/api/request/nurse/specialities/';
+  final response = await get(url);
 
   return compute(parseContent, response.body);
 }

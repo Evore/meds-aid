@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               maxWidth: MediaQuery.of(context).size.width,
             )),
             child: Center(
-              child: Text(errorMessage),
+              child: Text('errorMessage'),
             ),
           ),
         ],

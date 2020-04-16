@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:meds_aid/src/models.dart/request.dart';
@@ -41,7 +42,7 @@ class RequestItemState extends State<RequestItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(6, 10, 6, 0),
+      margin: EdgeInsets.fromLTRB(16, 7, 6, 7),
       constraints: BoxConstraints(
         minHeight: 100,
       ),
@@ -56,123 +57,20 @@ class RequestItemState extends State<RequestItem> {
               spreadRadius: 0),
         ],
       ),
-      child: buildContents(context),
+      child: buildContents(),
     );
   }
 
-  Widget buildContents(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[topRow(context), if (isPending) bottomRow(context)],
-    );
-  }
-
-  Widget statusWidget() {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4.5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: isPending ? Color(0xb08b9090) : Colors.pink[300],
-        ),
-        child: Text(
-          request.status ?? "",
-          style: TextStyle(color: Colors.white, fontSize: 10),
-        ),
-      ),
-    );
-  }
-
-  Widget topRow(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(12, 14, 10, 10),
-      child: Stack(
-        children: <Widget>[
-          statusWidget(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(request.statement ?? "",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey[800],
-                    fontWeight: FontWeight.w600,
-                  )),
-              SizedBox(height: 6),
-              Text(request.speciality ?? "",
-                  style: TextStyle(
-                      color: Colors.grey[700], fontWeight: FontWeight.w400)),
-              SizedBox(height: 6),
-              request.requestedAt != null
-                  ? Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(Icons.access_time,
-                              size: 17, color: Colors.grey[700]),
-                          SizedBox(width: 8),
-                          ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 200),
-                            child: Text(request.requestedAt ?? "",
-                                softWrap: true,
-                                style: TextStyle(
-                                    color: Colors.grey[800],
-                                    fontWeight: FontWeight.w600)),
-                          ),
-                        ],
-                      ),
-                    )
-                  : SizedBox.shrink(),
-              request.description != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        "\" ${request.description} \"",
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                    )
-                  : SizedBox.shrink()
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget bottomRow(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          FlatButton(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(6))),
-            onPressed: () {
-              handleRequest('accept');
-            },
-            child: Text(
-              'Accept',
-              style: TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ),
-          FlatButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(6))),
-              child: Text(
-                'Reject',
-                style: TextStyle(fontWeight: FontWeight.w500),
-              ),
-              onPressed: () {
-                handleRequest('reject');
-              })
-        ],
-      ),
+  Widget buildContents() {
+    return Row(
+      children: <Widget>[
+        SizedBox(height: 50, width: 50, child: CachedNetworkImage(
+        imageUrl: request.imageUrl,
+        progressIndicatorBuilder: (context, url, downloadProgress) => 
+                CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+     ),)
+      ],
     );
   }
 

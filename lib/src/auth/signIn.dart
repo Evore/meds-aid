@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meds_aid/src/auth/signup/sign_up.dart';
-import 'package:meds_aid/src/ui/pages/homepage.dart';
+import 'package:meds_aid/src/ui/pages/home.dart';
 import 'package:meds_aid/src/ui/widgets/dialogs.dart';
 import 'package:meds_aid/src/ui/widgets/inputs.dart';
 import 'package:meds_aid/src/utils/size_config.dart';
@@ -72,6 +72,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   final TextEditingController _password = TextEditingController();
 
   void apiFeedback(String type, String message) {
+    Navigator.of(context).pop();
     showSnackBar(snackbarContext, message);
     print('$type! $message');
   }
@@ -101,7 +102,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (BuildContext context) => HomePage(),
+                builder: (BuildContext context) => Home(),
               ));
 
           print(response.body);
@@ -120,7 +121,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
         apiFeedback("TimeoutException", e.message);
       } catch (e) {
         if (e is FormatException) print('Format Exception');
-        // apiFeedback("FormatException", e.message);
+        apiFeedback("FormatException", e.message);
       }
     }
   }
@@ -325,8 +326,8 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                   )),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => ProviderSignUp()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ProviderSignUp()));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
