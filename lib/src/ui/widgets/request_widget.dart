@@ -42,35 +42,103 @@ class RequestItemState extends State<RequestItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(16, 7, 6, 7),
+      margin: EdgeInsets.fromLTRB(20, 10, 20, 10),
+      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
       constraints: BoxConstraints(
-        minHeight: 100,
+        minHeight: 85,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-              color: Color(0x10002733),
-              offset: Offset(0, 3.5),
-              blurRadius: 2.5,
-              spreadRadius: 0),
-        ],
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          border: Border.all(color: Colors.grey[500], width: 0.2)),
       child: buildContents(),
     );
   }
 
   Widget buildContents() {
     return Row(
-      children: <Widget>[
-        SizedBox(height: 50, width: 50, child: CachedNetworkImage(
-        imageUrl: request.imageUrl,
-        progressIndicatorBuilder: (context, url, downloadProgress) => 
-                CircularProgressIndicator(value: downloadProgress.progress),
-        errorWidget: (context, url, error) => Icon(Icons.error),
-     ),)
-      ],
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[image(), center(), trailing()],
+    );
+  }
+
+  Widget image() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(50),
+      child: SizedBox(
+        height: 55,
+        width: 55,
+        child: Image.network(
+          request.imageUrl,
+          fit: BoxFit.cover,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes
+                      : null,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget center() {
+    return Container(
+      //  color: Colors.red[600],
+      padding: EdgeInsets.only(left: 25, right: 15),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(children: <Widget>[
+            Container(
+                width: 186,
+                child: Text(
+                  request.providerName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 19),
+                )),
+          ]),
+          SizedBox(height: 5),
+          Row(
+            children: <Widget>[
+              Icon(Icons.access_time, size: 11, color: Colors.grey[600]),
+              SizedBox(width: 3),
+              Text(request.requestedAt ?? '',
+                  style: TextStyle(fontSize: 11, color: Colors.grey[600])),
+            ],
+          ),
+          SizedBox(height: 8),
+          Row(
+            children: <Widget>[
+              Icon(Icons.location_on, size: 11, color: Colors.grey[600]),
+              SizedBox(width: 3),
+              Text('Abelemkpe, Accra',
+                  style: TextStyle(fontSize: 11, color: Colors.grey[600])),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget trailing() {
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: IconButton(
+        icon: Icon(Icons.open_in_new),
+        onPressed: () {},
+      ),
     );
   }
 
