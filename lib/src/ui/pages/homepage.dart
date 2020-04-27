@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: ListView.builder(
         itemCount: requests.length,
         itemBuilder: (BuildContext context, int index) {
-          return RequestItem(
+          return AcceptedRequestWidget(
             request: requests[index],
             sbContext: snackbarContext,
           );

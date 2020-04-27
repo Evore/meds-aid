@@ -67,21 +67,27 @@ class _HomeState extends State<Home> {
             children: <Widget>[acceptedRequests()],
           )
         : Center(
-            child: IconButton(
-              padding: EdgeInsets.all(0),
-              icon: Icon(Icons.replay),
-              onPressed: () {
-                provider.refreshRequests();
-              },
-            ),
-          );
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              IconButton(
+                padding: const EdgeInsets.all(0),
+                icon: Icon(Icons.replay),
+                onPressed: () {
+                  provider.refreshRequests();
+                },
+              ),
+              Text('Refresh', style: TextStyle(),)
+            ],
+          ),
+        );
   }
 
   Widget acceptedRequests() {
     var acceptedRequests = provider.getAcceptedRequests();
     return Column(
       children: acceptedRequests
-          .map((request) => RequestItem(
+          .map((request) => AcceptedRequestWidget(
                 request: request,
               ))
           .toList(),
